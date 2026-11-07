@@ -233,6 +233,7 @@
         .stat-card, 
         .project-card, 
         .service-card, 
+        .specs-card,
         .pricing-card,
         .contact-box {
             background: var(--card-bg);
@@ -246,6 +247,7 @@
         .stat-card:hover, 
         .project-card:hover, 
         .service-card:hover, 
+        .specs-card:hover,
         .pricing-card:hover,
         .contact-box:hover {
             transform: translateY(-8px) !important;
@@ -418,6 +420,42 @@
         }
 
         .service-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Nowa sekcja: Mój warsztat / Sprzęt */
+        .specs-section {
+            padding-bottom: 100px;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .specs-card {
+            padding: 24px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .specs-card .spec-label {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .specs-card h4 {
+            font-size: 1.1rem;
+        }
+
+        .specs-card p {
             color: var(--text-muted);
             font-size: 0.85rem;
         }
@@ -631,6 +669,32 @@
             margin-top: 8px;
         }
 
+        /* Styl ładnego dymka (Toast) */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--accent);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+            z-index: 9999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
         @media (max-width: 600px) {
             .hero {
                 padding: 60px 0 40px;
@@ -649,6 +713,7 @@
             }
         }
     </style>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
 </head>
 <body>
 
@@ -660,6 +725,7 @@
                     <li><a href="#projekty">Projekty</a></li>
                     <li><a href="#progres">Rozwój</a></li>
                     <li><a href="#uslugi">Usługi</a></li>
+                    <li><a href="#warsztat">Warsztat</a></li>
                     <li><a href="#cennik">Wycena</a></li>
                     <li><a href="#kontakt">Kontakt</a></li>
                 </ul>
@@ -709,7 +775,7 @@
                     </div>
                     <div class="project-content">
                         <span class="project-tag">Strony WWW / Nowoczesny Design</span>
-                        <h3>Immersive Historical Platform</h3>
+                        <h3>Historyczna platforma interaktywna</h3>
                         <p>Wielostronicowy portal edukacyjny (12 podstron) inspirowany designem marek luksusowych. Pełnoekranowy pokaz slajdów oraz zoptymalizowany moduł wiadomości w pigułce.</p>
                         <a href="#" class="project-link">Zobacz szczegóły &rarr;</a>
                     </div>
@@ -721,7 +787,7 @@
                     </div>
                     <div class="project-content">
                         <span class="project-tag">Aplikacje Webowe / Interfejsy UI</span>
-                        <h3>Supercar Showcase & 360° View</h3>
+                        <h3>Galeria supersamochodów z widokiem 360°</h3>
                         <p>Katalog luksusowych samochodów z dedykowanymi podstronami modeli, wyciąganiem specyfikacji technicznych oraz modułem interaktywnej prezentacji 360 stopni.</p>
                         <a href="#" class="project-link">Zobacz szczegóły &rarr;</a>
                     </div>
@@ -838,6 +904,34 @@
             </div>
         </section>
 
+        <section id="warsztat" class="specs-section">
+            <h2 class="section-title" data-aos="fade-up">Mój warsztat sprzętowy</h2>
+            <p class="section-subtitle" data-aos="fade-up">Konfiguracja maszyny, na której powstają projekty i kod.</p>
+
+            <div class="specs-grid">
+                <div class="specs-card" data-aos="fade-up" data-aos-delay="100">
+                    <span class="spec-label">Procesor</span>
+                    <h4>AMD Ryzen 9 9950X</h4>
+                    <p>Potężna jednostka do ekstremalnych obciążeń, profesjonalnego renderingu i błyskawicznej kompilacji złożonych projektów.</p>
+                </div>
+                <div class="specs-card" data-aos="fade-up" data-aos-delay="200">
+                    <span class="spec-label">Karta graficzna</span>
+                    <h4>ASUS ROG Strix GeForce RTX 5070 Ti</h4>
+                    <p>Topowy układ z ogromnym zapasem pamięci – absolutna wydajność do złożonego renderowania 3D, montażu 8K i bezkompromisowej grafiki.</p>
+                </div>
+                <div class="specs-card" data-aos="fade-up" data-aos-delay="300">
+                    <span class="spec-label">Pamięć RAM</span>
+                    <h4>G.Skill Trident Z5 Royal 64GB</h4>
+                    <p>Ekstremalnie wydajne i bezkompromisowo szybkie pamięci DDR5 6400MHz, idealne do najbardziej wymagających zadań i ciężkiej pracy wielozadaniowej.</p>
+                </div>
+                <div class="specs-card" data-aos="fade-up" data-aos-delay="400">
+                    <span class="spec-label">Pamięć masowa</span>
+                    <h4>Lexar NM790 2TB M.2</h4>
+                    <p>Gigantyczna przestrzeń i ekstremalny transfer danych do szybkiej pracy na potężnych plikach i wielkich projektach.</p>
+                </div>
+            </div>
+        </section>
+
         <section id="cennik" class="pricing">
             <h2 class="section-title" data-aos="fade-up">Zasady Wyceny</h2>
             <p class="section-subtitle" data-aos="fade-up">Przejrzyste warunki współpracy dostosowane do specyfikacji zlecenia.</p>
@@ -898,29 +992,32 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="firstName">Imię</label>
-                        <input type="text" id="firstName" name="firstName" class="form-input" placeholder="np. Jan">
+                        <input type="text" id="firstName" name="Imie" class="form-input" placeholder="np. Jan">
                         <span class="error-msg" id="firstNameErr">Pole imię jest wymagane.</span>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="lastName">Nazwisko</label>
-                        <input type="text" id="lastName" name="lastName" class="form-input" placeholder="np. Kowalski">
+                        <input type="text" id="lastName" name="Nazwisko" class="form-input" placeholder="np. Kowalski">
                         <span class="error-msg" id="lastNameErr">Pole nazwisko jest wymagane.</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="email">Adres e-mail</label>
-                    <input type="email" id="email" name="email" class="form-input" placeholder="jan.kowalski@gmail.com">
+                    <input type="email" id="email" name="E-Mail" class="form-input" placeholder="jan.kowalski@gmail.com">
                     <span class="error-msg" id="emailErr">Wprowadź poprawny adres e-mail (np. gmail.com, wp.pl, o2.pl).</span>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="message">Treść wiadomości</label>
-                    <textarea id="message" name="message" class="form-textarea" placeholder="Opisz w czym mogę Ci pomóc..."></textarea>
+                    <textarea id="message" name="Wiadomosc" class="form-textarea" placeholder="Opisz w czym mogę Ci pomóc..."></textarea>
                     <span class="error-msg" id="messageErr">Treść wiadomości nie może być pusta.</span>
                 </div>
                 <button type="submit" id="submitBtn" class="btn btn-primary form-submit">Wyślij wiadomość</button>
             </form>
         </div>
     </div>
+
+    <!-- Dymek powiadomienia (Toast) -->
+    <div id="toast" class="toast">Wysłano</div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
@@ -947,6 +1044,7 @@
         const openModalBtns = document.querySelectorAll('.open-modal-btn');
         const contactForm = document.getElementById('contactForm');
         const submitBtn = document.getElementById('submitBtn');
+        const toast = document.getElementById('toast');
 
         const firstName = document.getElementById('firstName');
         const lastName = document.getElementById('lastName');
@@ -981,6 +1079,13 @@
             submitBtn.disabled = false;
             [firstName, lastName, email, message].forEach(input => input.classList.remove('invalid'));
             [firstNameErr, lastNameErr, emailErr, messageErr].forEach(err => err.classList.remove('visible'));
+        }
+
+        function showToast() {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
         openModalBtns.forEach(btn => btn.addEventListener('click', openModal));
@@ -1055,8 +1160,8 @@
                     }
                 }).then(response => {
                     if (response.ok) {
-                        alert('Wiadomość została wysłana pomyślnie!');
                         closeModal();
+                        showToast();
                     } else {
                         alert('Wystąpił błąd podczas wysyłania wiadomości. Spróbuj ponownie.');
                         submitBtn.textContent = 'Wyślij wiadomość';
