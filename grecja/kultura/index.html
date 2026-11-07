@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kultura | Starożytna Grecja</title>
+    
+    <link rel="icon" type="image/svg+xml" href="logogrecja.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: #0c0c0c; 
+            color: #ffffff; 
+            background-image: url('tlo.png'); 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed; 
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        body::after { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); z-index: -1; }
+
+        .navbar { position: fixed; top: 0; left: 0; width: 100%; height: 90px; background: rgba(12, 12, 12, 0.6); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center; padding: 0 50px; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .menu-hamburger { display: flex; flex-direction: column; justify-content: space-between; width: 28px; height: 16px; cursor: pointer; }
+        .menu-hamburger span { display: block; width: 100%; height: 2px; background-color: #ffffff; }
+        .nav-logo { font-size: 1rem; letter-spacing: 4px; }
+        .btn-back { color: #ffffff; text-decoration: none; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; padding: 12px 28px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 2px; transition: all 0.3s ease; }
+        .btn-back:hover { background-color: #ffffff; color: #0c0c0c; border-color: #ffffff; }
+
+        .sidebar { position: fixed; top: 0; left: -350px; width: 350px; height: 100vh; background-color: #1a1a1a; z-index: 2000; transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1); padding: 50px; border-right: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar.active { transform: translateX(350px); }
+        .sidebar-close { font-size: 1.5rem; cursor: pointer; text-align: right; margin-bottom: 50px; color: white; }
+        .menu-list { list-style: none; }
+        .menu-list li { margin-bottom: 30px; }
+        .menu-list li a { color: #ffffff; font-size: 1.8rem; text-decoration: none; text-transform: uppercase; display: block; opacity: 0; transform: translateX(-50px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .sidebar.active .menu-list li a { opacity: 1; transform: translateX(0); }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.7); z-index: 1500; opacity: 0; pointer-events: none; transition: 0.5s; }
+        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .main-content { padding: 150px 50px 50px 50px; max-width: 1000px; margin: 0 auto; }
+        
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(25px);
+            animation: elementAppear 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .culture-card {
+            margin-bottom: 80px;
+            padding: 50px;
+            border: 1px solid #0004ff;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            opacity: 0;
+            transform: translateY(25px);
+            animation: elementAppear 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .culture-card:nth-of-type(1) { animation-delay: 0.2s; }
+        .culture-card:nth-of-type(2) { animation-delay: 0.3s; }
+        .culture-card:nth-of-type(3) { animation-delay: 0.4s; }
+        .culture-card:nth-of-type(4) { animation-delay: 0.5s; }
+        .culture-card:nth-of-type(5) { animation-delay: 0.6s; }
+
+        .card-img-wrapper {
+            width: 100%;
+            border: 1px solid #0004ff;
+            padding: 5px;
+            margin-bottom: 10px;
+            border-radius: 20px;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            transition: transform 0.4s ease;
+        }
+
+        .card-img:hover {
+            transform: scale(1.02);
+        }
+
+        @keyframes elementAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 0 20px; }
+            .nav-logo { font-size: 0.75rem; letter-spacing: 2px; }
+            .btn-back { padding: 8px 16px; font-size: 0.7rem; }
+            .main-content { padding: 120px 20px 60px 20px; }
+            
+            .culture-card { padding: 25px; margin-bottom: 50px; }
+            .card-img { height: 220px; }
+            
+            .sidebar { width: 100%; left: -100%; padding: 40px 20px; }
+            .sidebar.active { transform: translateX(100%); }
+            .menu-list li a { font-size: 1.4rem; }
+            
+            h1 { font-size: 2.2rem !important; letter-spacing: 3px !important; }
+            h2 { font-size: 1.5rem !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="menu-hamburger" id="hamburgerBtn"><span></span><span></span><span></span></div>
+        <div class="nav-logo">KULTURA STAROŻYTNYCH GREKÓW</div>
+        <a href="../../grecja.html" class="btn-back">Powrót</a>
+    </nav>
+
+    <div class="sidebar" id="sidebarMenu">
+        <div class="sidebar-close" id="closeBtn">✕</div>
+        <ul class="menu-list">
+            <li><a href="../bogowie/index.html">Bogowie</a></li>
+            <li><a href="../mapa/index.html">Mapa</a></li>
+            <li><a href="../architektura/index.html">Architektura</a></li>
+            <li><a href="../filozofowie/index.html">Filozofowie</a></li>
+            <li><a href="../wydarzenia/index.html">Wydarzenia</a></li>
+            <li><a href="index.html">Kultura</a></li>
+            <li><a href="../wojny/index.html">Wojny</a></li>
+            <li><a href="../mity/index.html">Mity</a></li>
+        </ul>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+<main class="main-content">
+    
+    <header style="text-align: center; margin-bottom: 100px;" class="fade-in-element">
+        <h1 style="font-size: 3.5rem; color: #ffffff; text-transform: uppercase; letter-spacing: 8px; margin-bottom: 40px;">W świecie Greków</h1>
+        
+        <div style="max-width: 600px; margin: 0 auto; background: rgba(212, 175, 55, 0.05); padding: 30px; border: 1px solid #0004ff; border-radius: 20px;">
+            <audio controls style="width: 100%; margin-bottom: 15px;">
+                <source src="mowa.mp3" type="audio/mpeg">
+                Twoja przeglądarka nie obsługuje odtwarzacza audio.
+            </audio>
+            <p style="color: #979797; font-style: italic; font-size: 0.9rem;">Tak prawdopodobnie brzmiała starożytna greka</p>
+        </div>
+    </header>
+
+    <section class="culture-card">
+        <div class="card-img-wrapper">
+            <div class="card-img" style="background-image: url('sympozjon.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">,,Sympozjon" - Parrasjos z Efezu.</div>
+        <h2 style="color: #0004ff; text-align: center; margin-bottom: 30px; font-size: 2rem;">Sympozjon</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Sympozjon to w starożytnej Grecji coś więcej niż zwykłe picie wina – to wieczorne spotkania mężczyzn, podczas których intelektualna wymiana myśli łączyła się z relaksem. Uczestnicy spotykali się w specjalnej sali, by wspólnie debatować o filozofii, polityce czy poezji, a nad przebiegiem wieczoru zawsze czuwał wybrany prowadzący, który dbał o odpowiednie proporcje wina i kulturę rozmowy.</p>
+    </section>
+
+    <section class="culture-card">
+        <div class="card-img-wrapper">
+            <div class="card-img" style="background-image: url('maski.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">Maski używane w teatrze przez starożytnych greków.</div>
+        <h2 style="color: #0004ff; text-align: center; margin-bottom: 30px; font-size: 2rem;">Teatr i rola masek</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Teatr w Grecji był kluczowym wydarzeniem publicznym i religijnym, gdzie scena stawała się miejscem wymiany najważniejszych wartości i emocji społeczności. Maska była tam absolutnie niezbędna, ponieważ pozwalała jednemu aktorowi płynnie wcielać się w kilka różnych postaci, co było konieczne przy ograniczonej liczbie wykonawców. Dodatkowo, specjalna konstrukcja ustnika w masce działała jak wczesny megafon, który skutecznie wzmacniał głos aktora, pozwalając na wyraźne słyszenie kwestii nawet w ogromnych, otwartych amfiteatrach.</p>
+    </section>
+
+    <section class="culture-card">
+        <div class="card-img-wrapper">
+            <div class="card-img" style="background-image: url('arete.png');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">,,Arete" - Polignot z Tasos</div>
+        <h2 style="color: #0004ff; text-align: center; margin-bottom: 30px; font-size: 2rem;">Koncepcja Arete</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Koncepcja Arete to grecki ideał dążenia do doskonałości oraz pełni swoich możliwości w każdej dziedzinie życia. Nie chodziło tylko o sukces fizyczny, ale o bycie najlepszym w tym, co się robi – czy to jako sportowiec, rzemieślnik czy mówca. To podejście spinało całe ich życie, będąc fundamentem charakteru i motywacją do ciągłego rozwoju, dzięki której Grecy tak mocno odciskali swoje piętno w historii.</p>
+    </section>
+
+    <section class="culture-card">
+        <div class="card-img-wrapper">
+            <div class="card-img" style="background-image: url('uczta.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">,,Uczta" - Zeuksis z Heraklei (jakość obrazu została ulepszona)</div>
+        <h2 style="color: #0004ff; text-align: center; margin-bottom: 30px; font-size: 2rem;">Codzienność i dieta</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Codzienność Greków opierała się na prostocie, gdzie rytm dnia wyznaczały praca, handel i posiłki. Ich dieta, znana dziś jako dieta śródziemnomorska, składała się głównie z produktów lokalnych: oliwy z oliwek, wina, ryb, chleba oraz świeżych owoców i warzyw. To właśnie ten prosty, zdrowy sposób odżywiania był fundamentem gospodarki i codziennego stylu życia tamtego regionu.</p>
+    </section>
+
+    <section class="culture-card">
+        <div class="card-img-wrapper">
+            <div class="card-img" style="background-image: url('igrzyska.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">,,Igrzyska" - Apelles z Kos (jakość obrazu została ulepszona)</div>
+        <h2 style="color: #0004ff; text-align: center; margin-bottom: 30px; font-size: 2rem;">Sport: Święty rozejm</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Sport w starożytnej Grecji pełnił funkcję nie tylko fizycznego hołdu dla bogów, ale również ważnego elementu jednoczącego Greków. Podczas Igrzysk obowiązywał święty rozejm, znany jako ekecheiria, który zakazywał wszelkich działań wojennych w całym kraju. Dzięki temu zawodnicy i widzowie mogli bezpiecznie dotrzeć do Olimpii, co czyniło sport chwilą wytchnienia od politycznych konfliktów i wojennych sporów.</p>
+    </section>
+
+</main>
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const menuLinks = document.querySelectorAll('.menu-list li a');
+        
+        function toggleSidebar() {
+            sidebarMenu.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            menuLinks.forEach((link, index) => {
+                link.style.transitionDelay = sidebarMenu.classList.contains('active') ? `${(index * 0.1) + 0.3}s` : '0s';
+            });
+        }
+        
+        hamburgerBtn.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+    </script>
+</body>
+</html>

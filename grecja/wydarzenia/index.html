@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wydarzenia | Starożytna Grecja</title>
+    
+    <link rel="icon" type="image/svg+xml" href="logogrecja.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('tlo.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2); 
+            z-index: -1;
+        }
+        body::after { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: -1; }
+
+        .navbar { position: fixed; top: 0; left: 0; width: 100%; height: 90px; background: rgba(12, 12, 12, 0.6); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center; padding: 0 50px; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .menu-hamburger { display: flex; flex-direction: column; justify-content: space-between; width: 28px; height: 16px; cursor: pointer; }
+        .menu-hamburger span { display: block; width: 100%; height: 2px; background-color: #ffffff; }
+        .nav-logo { font-size: 1rem; letter-spacing: 4px; }
+        .btn-back { color: #ffffff; text-decoration: none; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; padding: 12px 28px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 2px; transition: all 0.3s ease; }
+        .btn-back:hover { background-color: #ffffff; color: #0c0c0c; border-color: #ffffff; }
+
+        .sidebar { position: fixed; top: 0; left: -350px; width: 350px; height: 100vh; background-color: #1a1a1a; z-index: 2000; transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1); padding: 50px; border-right: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar.active { transform: translateX(350px); }
+        .sidebar-close { font-size: 1.5rem; cursor: pointer; text-align: right; margin-bottom: 50px; color: white; }
+        .menu-list { list-style: none; }
+        .menu-list li { margin-bottom: 30px; }
+        .menu-list li a { color: #ffffff; font-size: 1.8rem; text-decoration: none; text-transform: uppercase; display: block; opacity: 0; transform: translateX(-50px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .sidebar.active .menu-list li a { opacity: 1; transform: translateX(0); }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.7); z-index: 1500; opacity: 0; pointer-events: none; transition: 0.5s; }
+        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .main-content { padding: 150px 80px; max-width: 1000px; margin: 0 auto; }
+        
+        .fade-element {
+            opacity: 0;
+            transform: translateY(25px);
+            animation: elementAppear 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .event-card {
+            margin-bottom: 100px; 
+            padding: 60px; 
+            border: 1px solid #cf1c1c; 
+            background: rgba(0, 0, 0, 0.4); 
+            border-radius: 20px;
+            opacity: 0;
+            transform: translateY(25px);
+            animation: elementAppear 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .event-card:hover {
+            border-color: #ffffff;
+            box-shadow: 0 0 20px rgba(207, 28, 28, 0.4);
+        }
+
+        .event-img {
+            width: 100%; 
+            height: 400px; 
+            background-size: cover; 
+            background-position: center; 
+            border-radius: 15px;
+            transition: transform 0.4s ease;
+        }
+
+        .event-img:hover {
+            transform: scale(1.02);
+        }
+
+        @keyframes elementAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 0 20px; }
+            .nav-logo { font-size: 0.75rem; letter-spacing: 2px; }
+            .btn-back { padding: 8px 16px; font-size: 0.7rem; }
+            .main-content { padding: 120px 20px 60px 20px; }
+            
+            .event-card { padding: 25px; margin-bottom: 50px; }
+            .event-img { height: 220px; }
+            
+            .sidebar { width: 100%; left: -100%; padding: 40px 20px; }
+            .sidebar.active { transform: translateX(100%); }
+            .menu-list li a { font-size: 1.4rem; }
+            
+            h1 { font-size: 2.2rem !important; letter-spacing: 3px !important; }
+            h2 { font-size: 1.5rem !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="menu-hamburger" id="hamburgerBtn"><span></span><span></span><span></span></div>
+        <div class="nav-logo">WYDARZENIA</div>
+        <a href="../../grecja.html" class="btn-back">Powrót</a>
+    </nav>
+
+    <div class="sidebar" id="sidebarMenu">
+        <div class="sidebar-close" id="closeBtn">✕</div>
+        <ul class="menu-list">
+            <li><a href="../bogowie/index.html">Bogowie</a></li>
+            <li><a href="../mapa/index.html">Mapa</a></li>
+            <li><a href="../architektura/index.html">Architektura</a></li>
+            <li><a href="../filozofowie/index.html">Filozofowie</a></li>
+            <li><a href="index.html">Wydarzenia</a></li>
+            <li><a href="../kultura/index.html">Kultura</a></li>
+            <li><a href="../wojny/index.html">Wojny</a></li>
+            <li><a href="../mity/index.html">Mity</a></li>
+        </ul>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<main class="main-content">
+    <header class="fade-element" style="text-align: center; margin-bottom: 80px; padding: 40px; border-bottom: 2px solid #cf1c1c;">
+        <h1 style="font-size: 3.5rem; color: #ffffff; text-transform: uppercase; letter-spacing: 8px; margin-bottom: 20px;">Wielkie Odkrycia i Wynalazki</h1>
+        <p style="color: #808080; font-size: 1.2rem; font-style: italic; letter-spacing: 2px;">Ułożone od najwcześniejszego do najpóźniejszego.</p>
+    </header>
+
+    <section class="event-card" style="animation-delay: 0.1s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie1.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">Tak wyglądały zapiski Talesa.</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Pierwsza metoda naukowa – VI w. p.n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Tales z Miletu zmienił sposób, w jaki ludzie patrzą na świat, ponieważ jako pierwszy odrzucił tłumaczenie zjawisk przyrodniczych za pomocą mitów czy ingerencji bogów. Zamiast tego szukał on naturalnych przyczyn wydarzeń, opierając się na obserwacjach oraz logicznym wnioskowaniu. To właśnie ta zmiana podejścia – próba wyjaśnienia natury za pomocą samej natury – jest uważana za fundament współczesnej metody naukowej, która do dzisiaj pozwala nam badać świat w sposób racjonalny i mierzalny.</p>
+    </section>
+
+    <section class="event-card" style="animation-delay: 0.2s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie2.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">Oryginał drugiej mapy Anaksymandera z Miletu.</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Pierwsza mapa świata – VI w. p.n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Anaksymander z Miletu stworzył jedną z pierwszych w historii prób graficznego przedstawienia znanego ówcześnie świata na płaskiej powierzchni. Jego mapa była przełomowym osiągnięciem, ponieważ wprowadziła pojęcie geometrycznego odwzorowania przestrzeni, co dało kluczowe podwaliny pod rozwój nowoczesnej kartografii oraz geografii.</p>
+    </section>
+
+    <section class="event-card" style="animation-delay: 0.3s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie3.png');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">,,Debata w Atenach" - Apelles z Kos.</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Pierwsza publiczna debata w demokracji – V w. p.n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Pierwsza publiczna debata w demokracji narodziła się w Atenach, gdzie wprowadzono nowatorski jak na tamte czasy system sprawowania władzy. Zamiast polegać na decyzjach jednego wodza czy króla, o losach państwa zaczęli decydować sami obywatele podczas otwartych dyskusji i głosowań. Był to kluczowy moment, w którym słowo mówione oraz umiejętność argumentowania stały się narzędziami realnego wpływu na rzeczywistość, kształtując fundamenty polityki, w której liczy się zdanie ogółu..</p>
+    </section>
+
+    <section class="event-card" style="animation-delay: 0.4s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie4.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">Posąg Epikura znajdujący się na wyspie Samos.</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Rozwój myśli epikurejskiej – IV w. p.n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Rozwój myśli epikurejskiej to moment, w którym Epikur ogłosił, że celem życia jest osiągnięcie szczęścia poprzez unikanie cierpienia i bólu. Zamiast szukać spełnienia w bogactwie czy władzy, filozof ten stawiał na proste przyjemności, spokój ducha i przyjaźń. To podejście kompletnie zmieniło ówczesną etykę, przenosząc ciężar z wielkich czynów na codzienne, świadome dbanie o własne zadowolenie i równowagę emocjonalną.</p>
+    </section>
+
+    <section class="event-card" style="animation-delay: 0.5s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie5.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">Oryginalne zapiski Ktezibiusza z Aleksandrii.</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Pierwsze eksperymenty pneumatyczne – III w. p.n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Pierwsze eksperymenty pneumatyczne przeprowadził Ktezibiusz z Aleksandrii, który jako jeden z pierwszych zaczął świadomie wykorzystywać ciśnienie powietrza oraz wody do napędzania mechanizmów. Jego praca nad takimi urządzeniami jak pompa tłokowa czy organy wodne udowodniła, że prawa fizyki można zaprząc do pracy, co było pionierskim krokiem w stronę inżynierii mechanicznej i pokazało, jak zaawansowane może być praktyczne zastosowanie nauki w codziennym życiu.</p>
+    </section>
+
+    <section class="event-card" style="animation-delay: 0.6s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie6.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">,,Płomienna wieża" - Parrasjos z Efezu.</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Pierwsza latarnia morska - III w. p.n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Budowa latarni morskiej na wyspie Faros w Aleksandrii była przełomowym osiągnięciem inżynieryjnym starożytności, ponieważ stworzyła ona wzorzec dla wszystkich późniejszych konstrukcji tego typu. Dzięki zaawansowanemu projektowi, który łączył monumentalną architekturę z funkcjonalnością, konstrukcja ta skutecznie wyznaczała drogę żeglarzom, stając się jednym z najbardziej imponujących dowodów na to, jak Grecy potrafili wykorzystywać swoje umiejętności techniczne do ułatwiania nawigacji na morzu.</p>
+    </section>
+
+    <section class="event-card" style="animation-delay: 0.7s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie7.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">Nie zachowały się żadne oryginalne zapiski, wyjaśnienie tezy.</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Systematyzacja krzywych stożkowych – III/II w. p.n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Systematyzacja krzywych stożkowych przez Apolloniusza z Pergi była przełomem, ponieważ jako pierwszy w sposób kompleksowy opisał on właściwości elipsy, paraboli oraz hiperboli powstających przy przecinaniu stożka płaszczyzną. Jego zaawansowana praca nie tylko uporządkowała ówczesną wiedzę o tych kształtach, ale też wprowadziła nazewnictwo i definicje matematyczne, które stały się fundamentem dla przyszłych pokoleń naukowców i pozwoliły Keplerowi zrozumieć eliptyczne orbity planet.</p>
+    </section>
+
+    <section class="event-card" style="animation-delay: 0.8s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie8.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">Nie zachowały się żadne oryginalne zapiski, wyjaśnienie tezy.</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Odkrycie precesji równonocy – II w. p.n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Odkrycie precesji równonocy przez Hipparchosa to jeden z najważniejszych momentów w historii astronomii. Zauważył on, że położenie gwiazd na tle nieba bardzo powoli, ale systematycznie przesuwa się w czasie, co wynika z niewielkiego „chybotania” osi obrotu Ziemi. Dzięki temu odkryciu naukowcy zrozumieli, że niebo nie jest statyczne, a prowadzenie precyzyjnych obserwacji astronomicznych wymaga uwzględnienia tego zjawiska. Był to ogromny krok w stronę dokładniejszego mierzenia czasu oraz lepszego zrozumienia mechaniki całego układu niebieskiego.</p>
+    </section>
+
+    <section class="event-card" style="animation-delay: 0.9s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie9.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">Nie zachowały się żadne oryginalne zapiski, wizualizacja projektu.</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Pierwszy komputer świata – II/I w. p.n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Mechanizm z Antykithiry to prawdopodobnie pierwszy w historii komputer analogowy, stworzony ponad dwa tysiące lat temu. To niezwykle zaawansowane urządzenie z systemem przekładni zębatych potrafiło samodzielnie obliczać i przewidywać precyzyjne położenie planet oraz nadchodzące zaćmienia Słońca i Księżyca. Jego odkrycie zmieniło nasze postrzeganie starożytnej techniki, pokazując, że już wtedy budowano maszyny o stopniu skomplikowania, który w Europie został osiągnięty dopiero wiele wieków później.</p>
+    </section>
+
+    <section class="event-card" style="animation-delay: 1s;">
+        <div style="width: 100%; border: 1px solid #cf1c1c; padding: 5px; margin-bottom: 10px; border-radius: 20px;">
+            <div class="event-img" style="background-image: url('wydarzenie10.jpg');"></div>
+        </div>
+        <div style="color: #888; font-style: italic; font-size: 0.9rem; text-align: center; margin-bottom: 40px;">,,Niezgodność Filozofów" - Zeuksis z Heraklei</div>
+        <h2 style="color: #cf1c1c; text-align: center; margin-bottom: 30px; font-size: 2rem;">Powstanie Arytmetyki – III w. n.e.</h2>
+        <p style="color: #ccc; line-height: 1.8; font-size: 1.1rem;">Arytmetyka Diofantosa to kamień milowy w rozwoju matematyki, ponieważ jako pierwszy autor w tym dziele zaczął systematycznie używać symboli do zapisu równań. Dzięki temu matematyka stała się bardziej abstrakcyjna i przestała opierać się wyłącznie na opisie słownym, co było kluczowe dla narodzin nowoczesnej algebry. Jego praca pozwoliła rozwiązywać skomplikowane problemy liczbowe w sposób znacznie bardziej przejrzysty, kładąc podwaliny pod obliczenia, które stosuje się do dzisiaj.</p>
+    </section>
+
+</main>
+
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const menuLinks = document.querySelectorAll('.menu-list li a');
+        
+        function toggleSidebar() {
+            sidebarMenu.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            menuLinks.forEach((link, index) => {
+                link.style.transitionDelay = sidebarMenu.classList.contains('active') ? `${(index * 0.1) + 0.3}s` : '0s';
+            });
+        }
+        
+        hamburgerBtn.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+    </script>
+</body>
+</html>
