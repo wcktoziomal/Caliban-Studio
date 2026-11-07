@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starożytna Grecja</title>
+
+    <link rel="icon" type="image/svg+xml" href="galeriastarozytna/logogrecja.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0c0c0c;
+            color: #ffffff;
+            overflow-x: hidden;
+        }   
+
+        .main-content-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            background-image: url('galeriastarozytna/tloglowne.jpg');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-attachment: local; 
+            padding: 60px 0;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            background: rgba(12, 12, 12, 0.5); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-list li {
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .menu-list li a {
+            color: #ffffff;
+            font-size: 1.8rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .sidebar.active .menu-list li a {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .background-container {
+            position: absolute;
+            top: 100vh;
+            left: 0;
+            width: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-image {
+            width: 100%;
+            display: block;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            padding-top: 50px;
+        }
+
+        .menu-hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 28px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .menu-hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #ffffff;
+            transition: 0.3s ease;
+        }
+
+        .nav-logo {
+            font-size: 1rem;
+            letter-spacing: 4px;
+            color: #ffffff;
+            font-weight: 400;
+        }
+
+        .btn-back {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 12px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #ffffff;
+            color: #0c0c0c;
+            border-color: #ffffff;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -350px; 
+            width: 350px;
+            height: 100vh;
+            background-color: #0e0e0e;
+            z-index: 150;
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            padding: 50px;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar.active {
+            transform: translateX(350px); 
+        }
+
+        .sidebar-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            text-align: right;
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 140;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #000000;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .slide-1 { background-image: url('galeriastarozytna/atena.jpg'); }
+        .slide-2 { background-image: url('galeriastarozytna/mapa.jpg'); }
+        .slide-3 { background-image: url('galeriastarozytna/architektura.jpg'); }
+
+        .slide-bg {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 100%);
+        }
+
+        .slide-content {
+            position: absolute;
+            bottom: 120px;
+            left: 50px;
+            z-index: 10;
+            max-width: 600px;
+        }
+
+        .slide-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .btn-check {
+            display: inline-block;
+            background-color: transparent;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            padding: 12px 35px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-check:hover {
+            background-color: #ffffff;
+            color: #0c0c0c;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .arrow:hover {
+            opacity: 1;
+        }
+
+        .arrow-prev { left: 20px; }
+        .arrow-next { right: 20px; }
+
+        .indicators-container {
+            position: absolute;
+            bottom: 40px;
+            left: 50px;
+            right: 50px;
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .indicator-box {
+            flex: 1;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.2);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .indicator-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background-color: #ffffff;
+        }
+
+        .content-section {
+            background: rgba(12, 12, 12, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 120px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .content-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #888888;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+            .nav-logo {
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+            }
+            .slide-content {
+                left: 20px;
+                bottom: 80px;
+                right: 20px;
+            }
+            .slide-title {
+                font-size: 1.5rem;
+            }
+            .indicators-container {
+                left: 20px;
+                right: 20px;
+                bottom: 25px;
+            }
+            .content-section {
+                padding: 40px 20px !important;
+            }
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+            .sidebar.active {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="menu-hamburger" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-logo">ᴍᴀᴅᴇ ʙʏ ᴄᴀʟɪʙᴀɴ.ꜱᴛᴜᴅɪᴏ</div>
+        <a href="index.html" class="btn-back">Powrót</a>
+    </nav>
+
+    <div class="sidebar" id="sidebarMenu">
+        <div class="sidebar-close" id="closeBtn">✕</div>
+        <ul class="menu-list">
+            <li><a href="grecja/bogowie/index.html">Bogowie</a></li>
+            <li><a href="grecja/mapa/index.html">Mapa</a></li>
+            <li><a href="grecja/architektura/index.html">Architektura</a></li>
+            <li><a href="grecja/filozofowie/index.html">Filozofowie</a></li>
+            <li><a href="grecja/wydarzenia/index.html">Wydarzenia</a></li>
+            <li><a href="grecja/kultura/index.html">Kultura</a></li>
+            <li><a href="grecja/wojny/index.html">Wojny</a></li>
+            <li><a href="grecja/mity/index.html">Mity</a></li>
+        </ul>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="slider">
+        <div class="slide active">
+            <div class="slide-bg slide-1"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+                <h2 class="slide-title">Poznaj Greckich Bogów</h2>
+                <a href="grecja/bogowie/index.html" class="btn-check">Sprawdź</a>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-bg slide-2"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+                <h2 class="slide-title">Zbadaj mapę Grecji</h2>
+                <a href="grecja/mapa/index.html" class="btn-check">Sprawdź</a>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-bg slide-3"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+                <h2 class="slide-title">Zobacz architekturę Grecji</h2>
+                <a href="grecja/architektura/index.html" class="btn-check">Sprawdź</a>
+            </div>
+        </div>
+
+        <button class="arrow arrow-prev" id="prevBtn">&#10094;</button>
+        <button class="arrow arrow-next" id="nextBtn">&#10095;</button>
+
+        <div class="indicators-container">
+            <div class="indicator-box" onclick="goToSlide(0)">
+                <div class="indicator-progress"></div>
+            </div>
+            <div class="indicator-box" onclick="goToSlide(1)">
+                <div class="indicator-progress"></div>
+            </div>
+            <div class="indicator-box" onclick="goToSlide(2)">
+                <div class="indicator-progress"></div>
+            </div>
+        </div>
+    </main>
+
+    <div class="background-container">
+        <img src="galeriastarozytna/tloglowne.jpg" alt="tło" class="bg-image">
+    </div>
+
+    <div class="content-wrapper">
+        <section class="content-section">
+            <h2>Starożytna Grecja</h2>
+        </section>
+    </div>
+
+    <section class="content-section" style="text-align: left; max-width: 1000px; margin: 60px auto;">
+        <div style="margin-bottom: 40px;">
+            <h3 style="font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; color: #d4af37; margin-bottom: 15px;">Ramy Czasowe</h3>
+            <p style="font-size: 1.1rem; line-height: 1.8; color: #cccccc;">
+                Przyjmuje się, że historia starożytnej Grecji trwała od około <strong>1200 r. p.n.e.</strong> do <strong>146 r. p.n.e.</strong>, kiedy to po bitwie pod Koryntem Rzymianie całkowicie podbili greckie ziemie.
+            </p>
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            <h3 style="font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; color: #d4af37; margin-bottom: 15px;">Dlaczego epoka się zakończyła?</h3>
+            <p style="font-size: 1.1rem; line-height: 1.8; color: #cccccc; margin-bottom: 10px;">
+                Hellada nigdy nie była jednym spójnym państwem – składała się z setek niezależnych miast-państw (polis), które bez przerwy walczyły ze sobą o dominację.
+            </p>
+            <p style="font-size: 1.1rem; line-height: 1.8; color: #cccccc;">
+                Ciągłe wojny domowe osłabiły gospodarczo greckie polis. Gdy na zachodzie urosła potęga Rzymu, Grecy byli zbyt podzieleni, by stawić wspólny opór.
+            </p>
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            <h3 style="font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; color: #d4af37; margin-bottom: 15px;">Najważniejsze Wojny</h3>
+            <div style="font-size: 1.1rem; line-height: 1.8; color: #cccccc; padding-left: 20px; border-left: 2px solid #ffffff;">
+                <p style="margin-bottom: 15px;"><strong>Wojny perskie (499–449 p.n.e.)</strong> – Starcie wolnych greckich polis z Imperium Perskim (Termopile, Maraton, Salamina).</p>
+                <p style="margin-bottom: 15px;"><strong>Wojna peloponeska (431–404 p.n.e.)</strong> – Krwawa wojna domowa między Atenami a Spartą.</p>
+                <p style="margin-bottom: 15px;"><strong>Podboje Aleksandra Wielkiego (336–323 p.n.e.)</strong> – Zjednoczenie Grecji i podbój Wschodu (epoka hellenistyczna).</p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <h3 style="font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; color: #d4af37; margin-bottom: 15px;">Kluczowe Wydarzenia i Odkrycia</h3>
+            <div style="font-size: 1.1rem; line-height: 1.8; color: #cccccc; padding-left: 20px; border-left: 2px solid #ffffff;">
+                <p style="margin-bottom: 15px;"><strong>Narodziny Demokracji</strong> – Demokracja ateńska w V wieku p.n.e.</p>
+                <p style="margin-bottom: 15px;"><strong>Pierwsze Igrzyska Olimpijskie (776 r. p.n.e.)</strong> – Zawody sportowe ku czci Zeusa w Olimpii.</p>
+                <p style="margin-bottom: 15px;"><strong>Filozofia i Nauka</strong> – Sokrates, Platon, Arystoteles, Pitagoras i Archimedes.</p>
+                <p style="margin-bottom: 15px;"><strong>Teatr i Architektura</strong> – Tragedia, komedia oraz styl doricki, joński i koryncki.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const style = document.createElement('style');
+        style.innerHTML = '.indicator-progress { transition: width 0.3s ease-out; }';
+        document.head.appendChild(style);
+
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            sidebarMenu.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+
+            const links = document.querySelectorAll('.menu-list li a');
+            links.forEach((link, index) => {
+                if (sidebarMenu.classList.contains('active')) {
+                    link.style.transitionDelay = `${index * 0.1 + 0.2}s`;
+                } else {
+                    link.style.transitionDelay = '0s';
+                }
+            });
+        }
+
+        hamburgerBtn.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        const slides = document.querySelectorAll('.slide');
+        const progressBars = document.querySelectorAll('.indicator-progress');
+        
+        let currentSlide = 0;
+        const slideSlideTime = 5000; 
+        let startIntervalTime;
+        let animationFrameId;
+        let isResetting = false;
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                if(index === currentSlide) {
+                    slide.style.zIndex = '2';
+                    slide.classList.add('active');
+                } else {
+                    slide.style.zIndex = '1';
+                    slide.classList.remove('active');
+                }
+            });
+        }
+
+        function updateProgressBarsDisplay() {
+            if (isResetting) return;
+
+            progressBars.forEach((bar, index) => {
+                if (index < currentSlide) {
+                    bar.style.transition = 'width 0.3s ease-out';
+                    bar.style.width = '100%';
+                } else if (index > currentSlide) {
+                    bar.style.transition = 'width 0.3s ease-out';
+                    bar.style.width = '0%';
+                } else {
+                    bar.style.transition = 'none';
+                }
+            });
+        }
+
+        function animateProgressBar() {
+            if (isResetting) return;
+
+            const elapsed = Date.now() - startIntervalTime;
+            const progressPercentage = Math.min((elapsed / slideSlideTime) * 100, 100);
+            
+            if (progressBars[currentSlide]) {
+                progressBars[currentSlide].style.width = `${progressPercentage}%`;
+            }
+
+            if (elapsed >= slideSlideTime) {
+                nextSlide();
+            } else {
+                animationFrameId = requestAnimationFrame(animateProgressBar);
+            }
+        }
+
+        function startSlider() {
+            startIntervalTime = Date.now();
+            animationFrameId = requestAnimationFrame(animateProgressBar);
+        }
+
+        function stopSlider() {
+            cancelAnimationFrame(animationFrameId);
+        }
+
+        function nextSlide() {
+            stopSlider();
+            if (currentSlide === slides.length - 1) {
+                triggerFullReset(() => {
+                    currentSlide = 0;
+                    updateSlides();
+                    updateProgressBarsDisplay();
+                    startSlider();
+                });
+            } else {
+                currentSlide = (currentSlide + 1) % slides.length;
+                updateSlides();
+                updateProgressBarsDisplay();
+                startSlider();
+            }
+        }
+
+        function prevSlide() {
+            stopSlider();
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            updateSlides();
+            updateProgressBarsDisplay();
+            startSlider();
+        }
+
+        function goToSlide(slideIndex) {
+            stopSlider();
+            currentSlide = slideIndex;
+            updateSlides();
+            progressBars.forEach((bar) => bar.style.transition = 'width 0.4s ease-out');
+            updateProgressBarsDisplay();
+            setTimeout(() => {
+                startSlider();
+            }, 50);
+        }
+
+        function triggerFullReset(callback) {
+            isResetting = true;
+            progressBars.forEach(bar => {
+                bar.style.transition = 'width 0.5s cubic-bezier(0.77, 0, 0.175, 1)';
+                bar.style.width = '0%';
+            });
+            setTimeout(() => {
+                isResetting = false;
+                callback();
+            }, 500);
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+        window.onload = () => {
+            updateProgressBarsDisplay();
+            startSlider();
+        };
+    </script>
+
+</body>
+</html>
