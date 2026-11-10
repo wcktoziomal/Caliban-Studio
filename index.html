@@ -232,6 +232,7 @@
 
         .stat-card, 
         .project-card, 
+        .template-card,
         .service-card, 
         .specs-card,
         .pricing-card,
@@ -246,6 +247,7 @@
 
         .stat-card:hover, 
         .project-card:hover, 
+        .template-card:hover,
         .service-card:hover, 
         .specs-card:hover,
         .pricing-card:hover,
@@ -363,6 +365,28 @@
         .project-link:hover {
             color: var(--accent);
             transform: translateX(5px);
+        }
+
+        .templates {
+            padding-bottom: 100px;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .template-card {
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .template-content {
+            padding: 24px;
         }
 
         .evolution {
@@ -721,6 +745,7 @@
             <div class="nav-right">
                 <ul class="nav-links">
                     <li><a href="#projekty">Projekty</a></li>
+                    <li><a href="#szablony">Szablony</a></li>
                     <li><a href="#progres">Rozwój</a></li>
                     <li><a href="#uslugi">Usługi</a></li>
                     <li><a href="#warsztat">Warsztat</a></li>
@@ -767,7 +792,6 @@
             <p class="section-subtitle" data-aos="fade-up">Nowoczesne strony internetowe, wizytówki i profesjonalny montaż wideo.</p>
 
             <div class="projects-grid">
-                <!-- Kafelek z podpiętą stroną Grecji oraz zdjęciem atena.jpg otwierany w nowej karcie -->
                 <div class="project-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="project-img-wrapper">
                         <img src="atena.jpg" alt="Starożytna Grecja" class="project-img">
@@ -782,13 +806,13 @@
 
                 <div class="project-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="project-img-wrapper">
-                        <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=800&q=80" alt="Supercar Gallery" class="project-img">
+                        <img src="svj1.png" alt="Galeria Supersamochodów" class="project-img">
                     </div>
                     <div class="project-content">
                         <span class="project-tag">Aplikacje Webowe / Interfejsy UI</span>
                         <h3>Galeria supersamochodów z widokiem 360°</h3>
                         <p>Katalog luksusowych samochodów z dedykowanymi podstronami modeli, wyciąganiem specyfikacji technicznych oraz modułem interaktywnej prezentacji 360 stopni.</p>
-                        <a href="#" class="project-link">Zobacz szczegóły &rarr;</a>
+                        <a href="galeria supersamochodow/index.html" target="_blank" rel="noopener noreferrer" class="project-link">Zobacz szczegóły &rarr;</a>
                     </div>
                 </div>
 
@@ -800,7 +824,47 @@
                         <span class="project-tag">Montaż Wideo / Rozwój Zasięgów</span>
                         <h3>Szkolny TikTok & Social Media</h3>
                         <p>Pełna obsługa montażowa i graficzna profilu. Podniesienie średnich zasięgów z ~5 000 do ponad 100 000 wyświetleń na pojedynczych materiałach.</p>
-                        <a href="#" class="project-link">Zobacz wyniki &rarr;</a>
+                        <a href="wyniki.html" target="_blank" rel="noopener noreferrer" class="project-link">Zobacz wyniki &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="szablony" class="templates">
+            <h2 class="section-title" data-aos="fade-up">Gotowe szablony stron</h2>
+            <p class="section-subtitle" data-aos="fade-up">Wybierz profesjonalnie zaprojektowany szablon i uruchom swoją stronę w mgnieniu oka.</p>
+
+            <div class="templates-grid">
+                <div class="template-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="project-content">
+                        <span class="project-tag">Szablon / Wizytówka</span>
+                        <h3>Business Start</h3>
+                        <p>Minimalistyczny i responsywny szablon idealny dla małych firm, freelancerów oraz usług lokalnych. Szybki start i pełna optymalizacja SEO.</p>
+                    </div>
+                    <div class="project-content" style="padding-top: 0;">
+                        <button class="btn btn-secondary open-modal-btn" style="width: 100%;">Zamów szablon</button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="project-content">
+                        <span class="project-tag">Szablon / Portfolio & Creative</span>
+                        <h3>Creator Pro</h3>
+                        <p>Stworzony z myślą o twórcach wideo, fotografach i designerach. Efektowne układy galerii, nowoczesny design i płynne animacje hover.</p>
+                    </div>
+                    <div class="project-content" style="padding-top: 0;">
+                        <button class="btn btn-secondary open-modal-btn" style="width: 100%;">Zamów szablon</button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="project-content">
+                        <span class="project-tag">Szablon / E-Commerce & Landing</span>
+                        <h3>Conversion Boost</h3>
+                        <p>Wysoko konwertujący szablon pod pojedyncze produkty lub aplikacje. Zawiera gotowe sekcje cenników, opinii oraz formularze kontaktowe.</p>
+                    </div>
+                    <div class="project-content" style="padding-top: 0;">
+                        <button class="btn btn-secondary open-modal-btn" style="width: 100%;">Zamów szablon</button>
                     </div>
                 </div>
             </div>
@@ -979,7 +1043,6 @@
         </footer>
     </div>
 
-    <!-- Modal Okienko Kontaktowe -->
     <div class="modal-overlay" id="contactModal">
         <div class="modal-card">
             <button class="modal-close" id="modalClose">&times;</button>
@@ -1015,7 +1078,6 @@
         </div>
     </div>
 
-    <!-- Dymek powiadomienia (Toast) -->
     <div id="toast" class="toast">Wysłano</div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -1175,11 +1237,11 @@
         });
 
         [firstName, lastName, email, message].forEach(input => {
-            input.addEventListener('input', () => {
+            input.addEventListener('input', `() => {
                 input.classList.remove('invalid');
                 const errSpan = document.getElementById(input.id + 'Err');
                 if (errSpan) errSpan.classList.remove('visible');
-            });
+            }`);
         });
     </script>
 </body>
