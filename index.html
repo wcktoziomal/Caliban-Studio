@@ -375,6 +375,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 24px;
+            margin-bottom: 24px;
         }
 
         .template-card {
@@ -387,6 +388,23 @@
 
         .template-content {
             padding: 24px;
+        }
+
+        .configurator-note {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-left: 3px solid var(--accent);
+            padding: 22px 28px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .configurator-note span {
+            color: var(--text-main);
+            font-weight: 600;
         }
 
         .evolution {
@@ -831,18 +849,21 @@
         </section>
 
         <section id="szablony" class="templates">
-            <h2 class="section-title" data-aos="fade-up">Gotowe szablony stron</h2>
-            <p class="section-subtitle" data-aos="fade-up">Wybierz profesjonalnie zaprojektowany szablon i uruchom swoją stronę w mgnieniu oka.</p>
+            <h2 class="section-title" data-aos="fade-up">Interaktywne Szablony i Konfigurator</h2>
+            <p class="section-subtitle" data-aos="fade-up">Przetestuj w pełni responsywny szablon z panelem personalizacji kolorów i animacji na żywo.</p>
 
             <div class="templates-grid">
                 <div class="template-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="project-img-wrapper">
+                        <img src="szablon1zdjecie.png" alt="Wizualny Panel Ustawień" class="project-img">
+                    </div>
                     <div class="project-content">
-                        <span class="project-tag">Szablon / Wizytówka</span>
-                        <h3>Business Start</h3>
-                        <p>Minimalistyczny i responsywny szablon idealny dla małych firm, freelancerów oraz usług lokalnych. Szybki start i pełna optymalizacja SEO.</p>
+                        <span class="project-tag">Szablon / Dynamiczny Panel UI</span>
+                        <h3>Wizualny Panel Ustawień</h3>
+                        <p>Zaawansowany układ strony zintegrowany z panelem personalizacji. Pozwala na płynną zmianę palety barw tła, akcentów, gradientu paska górnego oraz dynamiki w czasie rzeczywistym.</p>
                     </div>
                     <div class="project-content" style="padding-top: 0;">
-                        <button class="btn btn-secondary open-modal-btn" style="width: 100%;">Zamów szablon</button>
+                        <a href="szablon1.html" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%; text-align: center; display: block;">Otwórz konfigurator</a>
                     </div>
                 </div>
 
@@ -853,7 +874,7 @@
                         <p>Stworzony z myślą o twórcach wideo, fotografach i designerach. Efektowne układy galerii, nowoczesny design i płynne animacje hover.</p>
                     </div>
                     <div class="project-content" style="padding-top: 0;">
-                        <button class="btn btn-secondary open-modal-btn" style="width: 100%;">Zamów szablon</button>
+                        <button class="btn btn-secondary open-modal-btn" style="width: 100%;">Zobacz konfigurator</button>
                     </div>
                 </div>
 
@@ -864,9 +885,13 @@
                         <p>Wysoko konwertujący szablon pod pojedyncze produkty lub aplikacje. Zawiera gotowe sekcje cenników, opinii oraz formularze kontaktowe.</p>
                     </div>
                     <div class="project-content" style="padding-top: 0;">
-                        <button class="btn btn-secondary open-modal-btn" style="width: 100%;">Zamów szablon</button>
+                        <button class="btn btn-secondary open-modal-btn" style="width: 100%;">Zobacz konfigurator</button>
                     </div>
                 </div>
+            </div>
+
+            <div class="configurator-note" data-aos="fade-up">
+                <p>💡 <span>Warto wiedzieć:</span> Udostępniony powyżej konfigurator ma charakter wyłącznie poglądowy. Prawdziwe, zaawansowane możliwości konfiguracji strony oraz dopracowanie każdego detalu pod Twoje indywidualne potrzeby pojawiają się dopiero po bezpośrednim kontakcie ze mną.</p>
             </div>
         </section>
 
@@ -1237,11 +1262,11 @@
         });
 
         [firstName, lastName, email, message].forEach(input => {
-            input.addEventListener('input', `() => {
+            input.addEventListener('input', () => {
                 input.classList.remove('invalid');
                 const errSpan = document.getElementById(input.id + 'Err');
                 if (errSpan) errSpan.classList.remove('visible');
-            }`);
+            });
         });
     </script>
 </body>
