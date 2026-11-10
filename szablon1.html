@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caliban Studio | Szablon 1</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+
+    <style>
+        :root {
+            --bg-color-default: #060606;
+            --card-bg-default: #121212;
+            --text-main-default: #ffffff;
+            --accent-color-default: #ffffff;
+            --header-bg-default: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0) 100%);
+            
+            --bg-color: var(--bg-color-default);
+            --card-bg: var(--card-bg-default);
+            --text-main: var(--text-main-default);
+            --text-muted: #a1a1a1;
+            --accent-color: var(--accent-color-default);
+            --header-bg: var(--header-bg-default);
+            --overlay-gradient: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.85) 100%);
+            
+            --site-speed: 0.4s;
+            --site-easing: cubic-bezier(0.25, 1, 0.5, 1);
+            --card-min-height: 480px;
+
+            --error-color: #ff4d4d;
+            --error-bg: rgba(255, 77, 77, 0.12);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color var(--site-speed) var(--site-easing), color var(--site-speed) var(--site-easing);
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            padding: 0 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: var(--header-bg);
+            pointer-events: none;
+            /* Poprawka płynności paska górnego – teraz animuje się gładko każdy rodzaj tła/gradientu */
+            transition: background-color var(--site-speed) var(--site-easing), 
+                        background-image var(--site-speed) var(--site-easing), 
+                        background var(--site-speed) var(--site-easing);
+        }
+
+        header button, header .header-center {
+            pointer-events: auto;
+        }
+
+        .header-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--text-main);
+            transition: color var(--site-speed) var(--site-easing);
+        }
+
+        .menu-btn, .config-btn {
+            background: rgba(10, 10, 10, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            z-index: 101;
+            transition: border-color var(--site-speed) var(--site-easing), background var(--site-speed) var(--site-easing), color var(--site-speed) var(--site-easing);
+        }
+
+        .menu-btn:hover, .config-btn:hover {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-menu {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 340px;
+            height: calc(100vh - 80px);
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 16px;
+            padding: 24px 36px;
+            transform: translateX(-100%);
+            transition: transform var(--site-speed) var(--site-easing), background-color var(--site-speed) var(--site-easing);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .dropdown-menu.active {
+            transform: translateX(0);
+        }
+
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+            border-left: 2px solid transparent;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-main);
+            opacity: 0;
+            transform: translateY(-25px);
+            transition: opacity var(--site-speed) var(--site-easing), 
+                        transform var(--site-speed) var(--site-easing), 
+                        background 0.25s ease, 
+                        border-left-color 0.25s ease,
+                        color var(--site-speed) var(--site-easing);
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-left-color: var(--accent-color);
+            transform: translateY(0) translateX(6px);
+        }
+
+        .menu-item-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-item-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .dropdown-menu.active .menu-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu.active .menu-item:nth-child(1) { transition-delay: 0.1s; }
+        .dropdown-menu.active .menu-item:nth-child(2) { transition-delay: 0.2s; }
+        .dropdown-menu.active .menu-item:nth-child(3) { transition-delay: 0.3s; }
+
+        .config-panel {
+            position: fixed;
+            top: 80px;
+            right: 0;
+            width: 420px;
+            height: calc(100vh - 80px);
+            background: rgba(12, 12, 14, 0.65);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-left: 1px solid rgba(255, 255, 255, 0.12);
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            padding: 32px 24px;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            color: #ffffff;
+        }
+
+        .config-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .config-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .config-panel::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 10px;
+        }
+        .config-panel::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .config-panel.active {
+            transform: translateX(0);
+        }
+
+        .config-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            opacity: 0;
+            transform: translateX(25px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .config-panel.active .config-section {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .config-panel.active .config-section:nth-child(1) { transition-delay: 0.05s; }
+        .config-panel.active .config-section:nth-child(2) { transition-delay: 0.1s; }
+        .config-panel.active .config-section:nth-child(3) { transition-delay: 0.15s; }
+
+        .config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 6px;
+        }
+
+        .config-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #d1d1d6;
+        }
+
+        .reset-btn {
+            background: none;
+            border: none;
+            color: #d1d1d6;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .sub-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.65);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .config-swatch-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .config-swatch-btn {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .config-swatch-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.08);
+        }
+
+        .config-swatch-btn.active {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .color-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 0, 0, 0.25);
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+
+        .config-grid-text {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .config-text-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 10px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .config-text-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .config-text-btn.active {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: #ffffff;
+            font-weight: 700;
+        }
+
+        .config-divider {
+            border: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.15);
+            margin: 8px 0;
+        }
+
+        .config-cta-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+            padding-top: 4px;
+        }
+
+        .config-cta-title {
+            font-size: clamp(1.1rem, 4vw, 1.25rem);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .btn-cta {
+            background: var(--accent-color);
+            color: #000000;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
+        }
+
+        .hero-fullscreen {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            padding: 60px 48px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .placeholder-video, .placeholder-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: background-color var(--site-speed) var(--site-easing), 
+                        color var(--site-speed) var(--site-easing);
+        }
+
+        .placeholder-video {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 550px;
+        }
+
+        .hero-model {
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            color: var(--text-main);
+            transition: color var(--site-speed) var(--site-easing);
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            line-height: 1.5;
+            transition: color var(--site-speed) var(--site-easing);
+        }
+
+        .hero-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color var(--site-speed) var(--site-easing), opacity 0.3s ease;
+        }
+
+        .hero-link:hover {
+            opacity: 0.7;
+        }
+
+        .grid-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 36px;
+            background-color: var(--bg-color);
+            width: 100%;
+            transition: background-color var(--site-speed) var(--site-easing), 
+                        grid-template-columns 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        padding 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .grid-section.layout-1col { grid-template-columns: 1fr; }
+        .grid-section.layout-2col { grid-template-columns: repeat(2, 1fr); }
+        .grid-section.layout-3col { grid-template-columns: repeat(3, 1fr); }
+        .grid-section.layout-4col { grid-template-columns: repeat(4, 1fr); }
+
+        .card-box {
+            position: relative;
+            width: 100%;
+            height: var(--card-min-height);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 36px;
+            background: var(--card-bg);
+            transition: transform var(--site-speed) var(--site-easing), 
+                        background-color var(--site-speed) var(--site-easing), 
+                        height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card-box:hover {
+            transform: scale(0.992);
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 55%;
+            background: var(--overlay-gradient);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 3;
+        }
+
+        .card-title {
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            transition: color var(--site-speed) var(--site-easing);
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            max-width: 420px;
+            line-height: 1.5;
+            transition: color var(--site-speed) var(--site-easing);
+        }
+
+        /* Modal kontaktowy */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: rgba(18, 18, 20, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 2px solid var(--accent-color);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+
+        .modal-header p {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .form-input.invalid, .form-textarea.invalid {
+            border-color: var(--error-color) !important;
+            background-color: var(--error-bg) !important;
+        }
+
+        .error-msg {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: none;
+            font-weight: 600;
+        }
+
+        .error-msg.visible {
+            display: block;
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 14px;
+            margin-top: 8px;
+            background: var(--accent-color);
+            color: #000000;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .form-submit:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: rgba(18, 18, 20, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            color: #ffffff;
+            border: 1px solid var(--accent-color);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+            z-index: 9999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        footer {
+            padding: 32px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            background-color: var(--bg-color);
+            transition: background-color var(--site-speed) var(--site-easing), color var(--site-speed) var(--site-easing);
+        }
+
+        /* --- RESPONSYWNOŚĆ I OPTYMALIZACJA DLA TELEFONÓW --- */
+        @media (max-width: 1024px) {
+            .grid-section {
+                grid-template-columns: repeat(2, 1fr) !important;
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            header {
+                padding: 0 18px;
+            }
+            .grid-section {
+                grid-template-columns: 1fr !important;
+                padding: 16px;
+                gap: 16px;
+            }
+            .card-box {
+                padding: 24px;
+            }
+            .hero-fullscreen {
+                padding: 40px 18px;
+            }
+            .header-center {
+                display: none;
+            }
+            .dropdown-menu, .config-panel {
+                width: 100%;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .modal-card {
+                padding: 24px;
+            }
+            .toast {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .config-swatch-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+            .config-panel {
+                padding: 24px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <button class="menu-btn" id="menuToggle">Menu &equiv;</button>
+        <div class="header-center">Twoja nazwa</div>
+        <button class="config-btn" id="configToggle">Konfiguruj</button>
+    </header>
+
+    <div class="dropdown-menu" id="dropdownMenu">
+        <a href="#podstrona1" class="menu-item">
+            <span class="menu-item-title">Podstrona 1</span>
+            <span class="menu-item-desc">Krótki opis lub zawartość pierwszej podstrony.</span>
+        </a>
+        <a href="#podstrona2" class="menu-item">
+            <span class="menu-item-title">Podstrona 2</span>
+            <span class="menu-item-desc">Krótki opis lub zawartość drugiej podstrony.</span>
+        </a>
+        <a href="#podstrona3" class="menu-item">
+            <span class="menu-item-title">Podstrona 3</span>
+            <span class="menu-item-desc">Krótki opis lub zawartość trzeciej podstrony.</span>
+        </a>
+    </div>
+
+    <div class="config-panel" id="configPanel">
+        
+        <div class="config-section" id="sec-colors">
+            <div class="config-header">
+                <span class="config-title">Paleta Kolorów</span>
+                <button class="reset-btn" id="reset-colors" title="Resetuj kolory">↻</button>
+            </div>
+            
+            <span class="sub-label">Kolor Strony</span>
+            <div class="config-swatch-grid" id="group-bg">
+                <button class="config-swatch-btn" data-bg="#ffffff" data-card="#ebedf0" data-text="#111111" data-muted="#555555" title="Biel"><span class="color-preview" style="background:#ffffff;"></span></button>
+                <button class="config-swatch-btn" data-bg="#e2ebf8" data-card="#c5d9f5" data-text="#0a2540" data-muted="#3b5998" title="Jasny Błękit"><span class="color-preview" style="background:#e2ebf8;"></span></button>
+                <button class="config-swatch-btn" data-bg="#d5f3e4" data-card="#b1e7cb" data-text="#0b381e" data-muted="#227a45" title="Jasna Mięta"><span class="color-preview" style="background:#d5f3e4;"></span></button>
+                <button class="config-swatch-btn" data-bg="#f7ebd9" data-card="#ebd0aa" data-text="#4a2e12" data-muted="#8c5823" title="Piaskowy Beż"><span class="color-preview" style="background:#f7ebd9;"></span></button>
+                <button class="config-swatch-btn" data-bg="#f7dbe3" data-card="#ebb2c1" data-text="#4a121b" data-muted="#913342" title="Pudrowy Róż"><span class="color-preview" style="background:#f7dbe3;"></span></button>
+                <button class="config-swatch-btn" data-bg="#ebd5f8" data-card="#d4abf5" data-text="#2d124a" data-muted="#693391" title="Liliowy"><span class="color-preview" style="background:#ebd5f8;"></span></button>
+                
+                <button class="config-swatch-btn" data-bg="#fbf6d9" data-card="#f3e8ab" data-text="#3a300a" data-muted="#7a671a" title="Jasny Cytrynowy"><span class="color-preview" style="background:#fbf6d9;"></span></button>
+                <button class="config-swatch-btn" data-bg="#f8e7d9" data-card="#eeccb3" data-text="#421f0a" data-muted="#85461e" title="Jasna Brzoskwinia"><span class="color-preview" style="background:#f8e7d9;"></span></button>
+                <button class="config-swatch-btn" data-bg="#d9f6f8" data-card="#b3edf1" data-text="#0a3d42" data-muted="#1e7b85" title="Jasny Turkus"><span class="color-preview" style="background:#d9f6f8;"></span></button>
+                <button class="config-swatch-btn" data-bg="#dce2e6" data-card="#bac5cd" data-text="#1a232a" data-muted="#485966" title="Błękitny Popiel"><span class="color-preview" style="background:#dce2e6;"></span></button>
+                <button class="config-swatch-btn" data-bg="#e6e6db" data-card="#cdcdc0" data-text="#21211a" data-muted="#59594a" title="Jasny Oliwkowy"><span class="color-preview" style="background:#e6e6db;"></span></button>
+                <button class="config-swatch-btn" data-bg="#ebdbe4" data-card="#d5b8c9" data-text="#301323" data-muted="#693653" title="Pastelowy Wrzos"><span class="color-preview" style="background:#ebdbe4;"></span></button>
+                
+                <button class="config-swatch-btn" data-bg="#c9d6e8" data-card="#9fb5d5" data-text="#0f1d30" data-muted="#334b6e" title="Stalowy Błękit"><span class="color-preview" style="background:#c9d6e8;"></span></button>
+                <button class="config-swatch-btn" data-bg="#c2e6d2" data-card="#93d5af" data-text="#0c2d1b" data-muted="#2a6643" title="Morska Zieleń Jasna"><span class="color-preview" style="background:#c2e6d2;"></span></button>
+                <button class="config-swatch-btn" data-bg="#e8d5c4" data-card="#d2b297" data-text="#331e0f" data-muted="#6e492d" title="Ciepły Cynamon"><span class="color-preview" style="background:#e8d5c4;"></span></button>
+                <button class="config-swatch-btn" data-bg="#b8b8c2" data-card="#9494a3" data-text="#11111a" data-muted="#3a3a47" title="Srebrny Metal"><span class="color-preview" style="background:#b8b8c2;"></span></button>
+                <button class="config-swatch-btn" data-bg="#8e8e93" data-card="#636366" data-text="#ffffff" data-muted="#d1d1d6" title="Szary Średni"><span class="color-preview" style="background:#8e8e93;"></span></button>
+                <button class="config-swatch-btn" data-bg="#636366" data-card="#48484a" data-text="#ffffff" data-muted="#d1d1d6" title="Ciemna Stal"><span class="color-preview" style="background:#636366;"></span></button>
+
+                <button class="config-swatch-btn" data-bg="#3a3a3c" data-card="#2c2c2e" data-text="#ffffff" data-muted="#aeaeb2" title="Ciemny Grafit"><span class="color-preview" style="background:#3a3a3c;"></span></button>
+                <button class="config-swatch-btn" data-bg="#1c1c1e" data-card="#121212" data-text="#ffffff" data-muted="#a1a1a1" title="Węgiel"><span class="color-preview" style="background:#1c1c1e;"></span></button>
+                <button class="config-swatch-btn" data-bg="#121824" data-card="#1a2333" data-text="#ffffff" data-muted="#8fa8cb" title="Granat Nocny"><span class="color-preview" style="background:#121824;"></span></button>
+                <button class="config-swatch-btn" data-bg="#171024" data-card="#241a36" data-text="#ffffff" data-muted="#b09bcb" title="Purpura Głęboka"><span class="color-preview" style="background:#171024;"></span></button>
+                <button class="config-swatch-btn" data-bg="#11241a" data-card="#1a3627" data-text="#ffffff" data-muted="#9bcab2" title="Zieleń Leśna"><span class="color-preview" style="background:#11241a;"></span></button>
+                <button class="config-swatch-btn active" data-bg="#060606" data-card="#121212" data-text="#ffffff" data-muted="#a1a1a1" title="Głęboka Czerń"><span class="color-preview" style="background:#060606;"></span></button>
+            </div>
+
+            <span class="sub-label">Akcenty</span>
+            <div class="config-swatch-grid" id="group-accent">
+                <button class="config-swatch-btn active" data-accent="#ffffff" title="Biel"><span class="color-preview" style="background:#ffffff;"></span></button>
+                <button class="config-swatch-btn" data-accent="#e0ffe0" title="Jasna Zieleń"><span class="color-preview" style="background:#e0ffe0;"></span></button>
+                <button class="config-swatch-btn" data-accent="#e0ffff" title="Jasny Cyjan"><span class="color-preview" style="background:#e0ffff;"></span></button>
+                <button class="config-swatch-btn" data-accent="#e6f0ff" title="Jasny Błękit"><span class="color-preview" style="background:#e6f0ff;"></span></button>
+                <button class="config-swatch-btn" data-accent="#fff0f5" title="Jasny Róż"><span class="color-preview" style="background:#fff0f5;"></span></button>
+                <button class="config-swatch-btn" data-accent="#fffacd" title="Cytrynowy"><span class="color-preview" style="background:#fffacd;"></span></button>
+                
+                <button class="config-swatch-btn" data-accent="#ccff00" title="Limonka"><span class="color-preview" style="background:#ccff00;"></span></button>
+                <button class="config-swatch-btn" data-accent="#00ff66" title="Neon Jaskrawy"><span class="color-preview" style="background:#00ff66;"></span></button>
+                <button class="config-swatch-btn" data-accent="#00d9ff" title="Cyjan Neon"><span class="color-preview" style="background:#00d9ff;"></span></button>
+                <button class="config-swatch-btn" data-accent="#3388ff" title="Niebieski"><span class="color-preview" style="background:#3388ff;"></span></button>
+                <button class="config-swatch-btn" data-accent="#8a2be2" title="Fiolet"><span class="color-preview" style="background:#8a2be2;"></span></button>
+                <button class="config-swatch-btn" data-accent="#ff00ff" title="Magenta"><span class="color-preview" style="background:#ff00ff;"></span></button>
+                
+                <button class="config-swatch-btn" data-accent="#ff0055" title="Neon Róż"><span class="color-preview" style="background:#ff0055;"></span></button>
+                <button class="config-swatch-btn" data-accent="#ff3300" title="Czerwono-Pomarańczowy"><span class="color-preview" style="background:#ff3300;"></span></button>
+                <button class="config-swatch-btn" data-accent="#ff6600" title="Bursztyn"><span class="color-preview" style="background:#ff6600;"></span></button>
+                <button class="config-swatch-btn" data-accent="#ffd700" title="Złoty Jasny"><span class="color-preview" style="background:#ffd700;"></span></button>
+                <button class="config-swatch-btn" data-accent="#d4af37" title="Złoty Klasyczny"><span class="color-preview" style="background:#d4af37;"></span></button>
+                <button class="config-swatch-btn" data-accent="#e60000" title="Czerwień"><span class="color-preview" style="background:#e60000;"></span></button>
+                
+                <button class="config-swatch-btn" data-accent="#00ffa6" title="Miętowy Neon"><span class="color-preview" style="background:#00ffa6;"></span></button>
+                <button class="config-swatch-btn" data-accent="#ff9900" title="Pomarańcz"><span class="color-preview" style="background:#ff9900;"></span></button>
+                <button class="config-swatch-btn" data-accent="#b800ff" title="Purpura Neon"><span class="color-preview" style="background:#b800ff;"></span></button>
+                <button class="config-swatch-btn" data-accent="#555555" title="Ciemnoszary"><span class="color-preview" style="background:#555555;"></span></button>
+                <button class="config-swatch-btn" data-accent="#333333" title="Grafit"><span class="color-preview" style="background:#333333;"></span></button>
+                <button class="config-swatch-btn" data-accent="#111111" title="Czarny"><span class="color-preview" style="background:#111111;"></span></button>
+            </div>
+
+            <span class="sub-label">Pasek Górny</span>
+            <div class="config-swatch-grid" id="group-header">
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)" title="Biały Gradient"><span class="color-preview" style="background:#ffffff;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(226,235,248,0.95) 0%, rgba(0,0,0,0) 100%)" title="Błękitny Gradient"><span class="color-preview" style="background:#e2ebf8;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(213,243,228,0.95) 0%, rgba(0,0,0,0) 100%)" title="Miętowy Gradient"><span class="color-preview" style="background:#d5f3e4;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(247,235,217,0.95) 0%, rgba(0,0,0,0) 100%)" title="Piaskowy Gradient"><span class="color-preview" style="background:#f7ebd9;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(247,219,227,0.95) 0%, rgba(0,0,0,0) 100%)" title="Różowy Gradient"><span class="color-preview" style="background:#f7dbe3;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(235,213,248,0.95) 0%, rgba(0,0,0,0) 100%)" title="Liliowy Gradient"><span class="color-preview" style="background:#ebd5f8;"></span></button>
+                
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(204,255,0,0.4) 0%, rgba(0,0,0,0) 100%)" title="Limonka"><span class="color-preview" style="background:#ccff00;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(0,255,102,0.4) 0%, rgba(0,0,0,0) 100%)" title="Zielony"><span class="color-preview" style="background:#00ff66;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(0,217,255,0.4) 0%, rgba(0,0,0,0) 100%)" title="Cyjan"><span class="color-preview" style="background:#00d9ff;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(51,136,255,0.4) 0%, rgba(0,0,0,0) 100%)" title="Niebieski"><span class="color-preview" style="background:#3388ff;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(255,0,85,0.4) 0%, rgba(0,0,0,0) 100%)" title="Neon Róż"><span class="color-preview" style="background:#ff0055;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(255,102,0,0.4) 0%, rgba(0,0,0,0) 100%)" title="Pomarańczowy"><span class="color-preview" style="background:#ff6600;"></span></button>
+
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(255,215,0,0.4) 0%, rgba(0,0,0,0) 100%)" title="Złoty Gradient"><span class="color-preview" style="background:#ffd700;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(230,0,0,0.4) 0%, rgba(0,0,0,0) 100%)" title="Czerwony"><span class="color-preview" style="background:#e60000;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(201,214,232,0.95) 0%, rgba(0,0,0,0) 100%)" title="Stalowy Błękit Pasek"><span class="color-preview" style="background:#c9d6e8;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(194,230,210,0.95) 0%, rgba(0,0,0,0) 100%)" title="Morska Zieleń Pasek"><span class="color-preview" style="background:#c2e6d2;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(232,213,196,0.95) 0%, rgba(0,0,0,0) 100%)" title="Cynamonowy Pasek"><span class="color-preview" style="background:#e8d5c4;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(184,184,194,0.95) 0%, rgba(0,0,0,0) 100%)" title="Srebrny Pasek"><span class="color-preview" style="background:#b8b8c2;"></span></button>
+
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(99,99,102,0.85) 0%, rgba(0,0,0,0) 100%)" title="Ciemna Stal Pasek"><span class="color-preview" style="background:#636366;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(28,28,30,0.95) 0%, rgba(0,0,0,0) 100%)" title="Ciemny Grafit Pasek"><span class="color-preview" style="background:#1c1c1e;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(18,24,36,0.95) 0%, rgba(0,0,0,0) 100%)" title="Granatowy Pasek"><span class="color-preview" style="background:#121824;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(23,16,36,0.95) 0%, rgba(0,0,0,0) 100%)" title="Purpurowy Pasek"><span class="color-preview" style="background:#171024;"></span></button>
+                <button class="config-swatch-btn" data-header="linear-gradient(180deg, rgba(17,36,26,0.95) 0%, rgba(0,0,0,0) 100%)" title="Leśny Pasek"><span class="color-preview" style="background:#11241a;"></span></button>
+                <button class="config-swatch-btn active" data-header="linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0) 100%)" title="Czarny Standard"><span class="color-preview" style="background:#000000;"></span></button>
+            </div>
+        </div>
+
+        <div class="config-section" id="sec-anim">
+            <div class="config-header">
+                <span class="config-title">Animacje</span>
+                <button class="reset-btn" id="reset-anim" title="Resetuj animacje">↻</button>
+            </div>
+
+            <span class="sub-label">Prędkość Animacji</span>
+            <div class="config-grid-text" id="group-speed">
+                <button class="config-text-btn" data-speed="0.2s">0.2s (Szybkie)</button>
+                <button class="config-text-btn active" data-speed="0.4s">0.4s (Płynne)</button>
+                <button class="config-text-btn" data-speed="0.6s">0.6s (Wolne)</button>
+                <button class="config-text-btn" data-speed="0.9s">0.9s (Bardzo wolne)</button>
+            </div>
+
+            <span class="sub-label">Typ Animacji</span>
+            <div class="config-grid-text" id="group-easing">
+                <button class="config-text-btn active" data-easing="cubic-bezier(0.25, 1, 0.5, 1)">Progresywna</button>
+                <button class="config-text-btn" data-easing="ease-in-out">Łagodna</button>
+                <button class="config-text-btn" data-easing="cubic-bezier(0.68, -0.55, 0.265, 1.55)">Sprężysta</button>
+                <button class="config-text-btn" data-easing="cubic-bezier(0.16, 1, 0.3, 1)">Młotkowa</button>
+                <button class="config-text-btn" data-easing="cubic-bezier(0.7, 0, 0.84, 0)">Dynamika</button>
+                <button class="config-text-btn" data-easing="cubic-bezier(0.34, 1.56, 0.64, 1)">Puchnąca</button>
+            </div>
+        </div>
+
+        <div class="config-section" id="sec-layout">
+            <div class="config-header">
+                <span class="config-title">Układ i Rozmiary</span>
+                <button class="reset-btn" id="reset-layout" title="Resetuj układ">↻</button>
+            </div>
+
+            <span class="sub-label">Siatka Kafelków</span>
+            <div class="config-grid-text" id="group-columns">
+                <button class="config-text-btn" data-cols="layout-1col">1 Kolumna</button>
+                <button class="config-text-btn" data-cols="layout-2col">2 Kolumny</button>
+                <button class="config-text-btn active" data-cols="layout-3col">3 Kolumny (3x2)</button>
+                <button class="config-text-btn" data-cols="layout-4col">4 Kolumny</button>
+            </div>
+
+            <span class="sub-label">Rozmiar Zdjęć</span>
+            <div class="config-grid-text" id="group-size">
+                <button class="config-text-btn" data-size="360px">Małe</button>
+                <button class="config-text-btn active" data-size="480px">Domyślne</button>
+                <button class="config-text-btn" data-size="580px">Średnie</button>
+                <button class="config-text-btn" data-size="680px">Duże</button>
+            </div>
+        </div>
+
+        <hr class="config-divider">
+
+        <div class="config-cta-block">
+            <h3 class="config-cta-title">Wszystko gotowe?</h3>
+            <button class="btn-cta" id="openContactModal">Napisz do mnie!</button>
+        </div>
+
+    </div>
+
+    <section class="hero-fullscreen">
+        <div class="placeholder-video">Twój film</div>
+        <div class="hero-overlay" style="position: absolute; bottom:0; left:0; width:100%; height:70%; background:var(--overlay-gradient); z-index:1;"></div>
+        <div class="hero-content">
+            <h1 class="hero-model">Twój nagłówek</h1>
+            <p class="hero-desc">Twój tekst – opisz tutaj swój główny produkt, usługę lub wyjątkowy element oferty.</p>
+            <a href="#kontakt" class="hero-link">Dowiedz się więcej &rarr;</a>
+        </div>
+    </section>
+
+    <section class="grid-section layout-3col" id="gridSection">
+        <div class="card-box">
+            <div class="placeholder-img">Twoje zdjęcie</div>
+            <div class="card-overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title">Nagłówek 1</h2>
+                <p class="card-desc">Twój opis dla pierwszego elementu oferty lub podstrony.</p>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <div class="placeholder-img">Twoje zdjęcie</div>
+            <div class="card-overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title">Nagłówek 2</h2>
+                <p class="card-desc">Twój opis dla drugiego elementu oferty lub podstrony.</p>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <div class="placeholder-img">Twoje zdjęcie</div>
+            <div class="card-overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title">Nagłówek 3</h2>
+                <p class="card-desc">Twój opis dla trzeciego elementu portfolio lub usługi.</p>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <div class="placeholder-img">Twoje zdjęcie</div>
+            <div class="card-overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title">Nagłówek 4</h2>
+                <p class="card-desc">Twój opis dla czwartego elementu portfolio lub usługi.</p>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <div class="placeholder-img">Twoje zdjęcie</div>
+            <div class="card-overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title">Nagłówek 5</h2>
+                <p class="card-desc">Twój opis dla piątego elementu portfolio lub usługi.</p>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <div class="placeholder-img">Twoje zdjęcie</div>
+            <div class="card-overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title">Nagłówek 6</h2>
+                <p class="card-desc">Twój opis dla szóstego elementu portfolio lub usługi.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Caliban Studio. Wszystkie prawa zastrzeżone.</p>
+    </footer>
+
+    <!-- Okno kontaktowe -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-card">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-header">
+                <h3>Wyślij wiadomość</h3>
+                <p>Wypełnij poniższe pola, a odpowiem najszybciej jak to możliwe.</p>
+            </div>
+            <form id="contactForm" action="https://formspree.io/f/xbggelzw" method="POST" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="firstName">Imię</label>
+                        <input type="text" id="firstName" name="Imie" class="form-input" placeholder="np. Jan">
+                        <span class="error-msg" id="firstNameErr">Pole imię jest wymagane.</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="lastName">Nazwisko</label>
+                        <input type="text" id="lastName" name="Nazwisko" class="form-input" placeholder="np. Kowalski">
+                        <span class="error-msg" id="lastNameErr">Pole nazwisko jest wymagane.</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">Adres e-mail</label>
+                    <input type="email" id="email" name="E-Mail" class="form-input" placeholder="jan.kowalski@gmail.com">
+                    <span class="error-msg" id="emailErr">Wprowadź poprawny adres e-mail (np. gmail.com, wp.pl, o2.pl).</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="message">Treść wiadomości</label>
+                    <textarea id="message" name="Wiadomosc" class="form-textarea" placeholder="Opisz w czym mogę Ci pomóc..."></textarea>
+                    <span class="error-msg" id="messageErr">Treść wiadomości nie może być pusta.</span>
+                </div>
+                <button type="submit" id="submitBtn" class="form-submit">Wyślij wiadomość</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Powiadomienie Toast -->
+    <div id="toast" class="toast">Wysłano</div>
+
+    <script>
+        const menuBtn = document.getElementById('menuToggle');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const configBtn = document.getElementById('configToggle');
+        const configPanel = document.getElementById('configPanel');
+        const gridSection = document.getElementById('gridSection');
+
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            configPanel.classList.remove('active');
+            dropdownMenu.classList.toggle('active');
+        });
+
+        configBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.remove('active');
+            configPanel.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!dropdownMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                dropdownMenu.classList.remove('active');
+            }
+            if (!configPanel.contains(e.target) && !configBtn.contains(e.target) && !contactModal.contains(e.target) && e.target !== openContactModal) {
+                configPanel.classList.remove('active');
+            }
+        });
+
+        function closeConfigOnMobile() {
+            if (window.innerWidth <= 640) {
+                configPanel.classList.remove('active');
+            }
+        }
+
+        function setActive(group, btn) {
+            group.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            closeConfigOnMobile();
+        }
+
+        const groupBg = document.getElementById('group-bg');
+        groupBg.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            setActive(groupBg, btn);
+            document.documentElement.style.setProperty('--bg-color', btn.dataset.bg);
+            document.documentElement.style.setProperty('--card-bg', btn.dataset.card);
+            document.documentElement.style.setProperty('--text-main', btn.dataset.text);
+            document.documentElement.style.setProperty('--text-muted', btn.dataset.muted || '#a1a1a1');
+        });
+
+        const groupAccent = document.getElementById('group-accent');
+        groupAccent.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            setActive(groupAccent, btn);
+            document.documentElement.style.setProperty('--accent-color', btn.dataset.accent);
+        });
+
+        const groupHeader = document.getElementById('group-header');
+        groupHeader.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            setActive(groupHeader, btn);
+            document.documentElement.style.setProperty('--header-bg', btn.dataset.header);
+        });
+
+        const groupSpeed = document.getElementById('group-speed');
+        groupSpeed.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            setActive(groupSpeed, btn);
+            document.documentElement.style.setProperty('--site-speed', btn.dataset.speed);
+        });
+
+        const groupEasing = document.getElementById('group-easing');
+        groupEasing.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            setActive(groupEasing, btn);
+            document.documentElement.style.setProperty('--site-easing', btn.dataset.easing);
+        });
+
+        const groupColumns = document.getElementById('group-columns');
+        groupColumns.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            setActive(groupColumns, btn);
+            gridSection.className = 'grid-section ' + btn.dataset.cols;
+        });
+
+        const groupSize = document.getElementById('group-size');
+        groupSize.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            setActive(groupSize, btn);
+            document.documentElement.style.setProperty('--card-min-height', btn.dataset.size);
+        });
+
+        document.getElementById('reset-colors').addEventListener('click', () => {
+            document.documentElement.style.setProperty('--bg-color', 'var(--bg-color-default)');
+            document.documentElement.style.setProperty('--card-bg', 'var(--card-bg-default)');
+            document.documentElement.style.setProperty('--text-main', 'var(--text-main-default)');
+            document.documentElement.style.setProperty('--text-muted', '#a1a1a1');
+            document.documentElement.style.setProperty('--accent-color', 'var(--accent-color-default)');
+            document.documentElement.style.setProperty('--header-bg', 'var(--header-bg-default)');
+            
+            setActive(groupBg, groupBg.querySelector('[data-bg="#060606"]'));
+            setActive(groupAccent, groupAccent.querySelector('[data-accent="#ffffff"]'));
+            setActive(groupHeader, groupHeader.querySelector('[data-header*="rgba(0,0,0,0.95)"]'));
+        });
+
+        document.getElementById('reset-anim').addEventListener('click', () => {
+            document.documentElement.style.setProperty('--site-speed', '0.4s');
+            document.documentElement.style.setProperty('--site-easing', 'cubic-bezier(0.25, 1, 0.5, 1)');
+            setActive(groupSpeed, groupSpeed.querySelector('[data-speed="0.4s"]'));
+            setActive(groupEasing, groupEasing.querySelector('[data-easing="cubic-bezier(0.25, 1, 0.5, 1)"]'));
+        });
+
+        document.getElementById('reset-layout').addEventListener('click', () => {
+            document.documentElement.style.setProperty('--card-min-height', '480px');
+            gridSection.className = 'grid-section layout-3col';
+            setActive(groupColumns, groupColumns.querySelector('[data-cols="layout-3col"]'));
+            setActive(groupSize, groupSize.querySelector('[data-size="480px"]'));
+        });
+
+        const contactModal = document.getElementById('contactModal');
+        const modalClose = document.getElementById('modalClose');
+        const openContactModal = document.getElementById('openContactModal');
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const toast = document.getElementById('toast');
+
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+        const email = document.getElementById('email');
+        const message = document.getElementById('message');
+
+        const firstNameErr = document.getElementById('firstNameErr');
+        const lastNameErr = document.getElementById('lastNameErr');
+        const emailErr = document.getElementById('emailErr');
+        const messageErr = document.getElementById('messageErr');
+
+        const popularDomains = [
+            'gmail.com', 'wp.pl', 'onet.pl', 'o2.pl', 'interia.pl', 
+            'gazeta.pl', 'yahoo.com', 'outlook.com', 'hotmail.com', 
+            'icloud.com', 'proton.me', 'protonmail.com', 'tlen.pl'
+        ];
+
+        function openModal() {
+            configPanel.classList.remove('active');
+            contactModal.classList.add('active');
+        }
+
+        function closeModal() {
+            contactModal.classList.remove('active');
+            setTimeout(() => {
+                resetForm();
+            }, 500);
+        }
+
+        function resetForm() {
+            contactForm.reset();
+            submitBtn.textContent = 'Wyślij wiadomość';
+            submitBtn.disabled = false;
+            [firstName, lastName, email, message].forEach(input => input.classList.remove('invalid'));
+            [firstNameErr, lastNameErr, emailErr, messageErr].forEach(err => err.classList.remove('visible'));
+        }
+
+        function showToast() {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        openContactModal.addEventListener('click', openModal);
+        modalClose.addEventListener('click', closeModal);
+
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) {
+                closeModal();
+            }
+        });
+
+        function validateEmail(emailVal) {
+            const basicRegex = /^[^\s@]+@([^\s@]+\.[^\s@]+)$/;
+            const match = emailVal.trim().toLowerCase().match(basicRegex);
+            if (!match) return false;
+            
+            const domain = match[1];
+            return popularDomains.includes(domain);
+        }
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let isValid = true;
+
+            if (firstName.value.trim() === '') {
+                firstName.classList.add('invalid');
+                firstNameErr.classList.add('visible');
+                isValid = false;
+            } else {
+                firstName.classList.remove('invalid');
+                firstNameErr.classList.remove('visible');
+            }
+
+            if (lastName.value.trim() === '') {
+                lastName.classList.add('invalid');
+                lastNameErr.classList.add('visible');
+                isValid = false;
+            } else {
+                lastName.classList.remove('invalid');
+                lastNameErr.classList.remove('visible');
+            }
+
+            if (!validateEmail(email.value)) {
+                email.classList.add('invalid');
+                emailErr.classList.add('visible');
+                isValid = false;
+            } else {
+                email.classList.remove('invalid');
+                emailErr.classList.remove('visible');
+            }
+
+            if (message.value.trim() === '') {
+                message.classList.add('invalid');
+                messageErr.classList.add('visible');
+                isValid = false;
+            } else {
+                message.classList.remove('invalid');
+                messageErr.classList.remove('visible');
+            }
+
+            if (isValid) {
+                submitBtn.textContent = 'Wysyłanie...';
+                submitBtn.disabled = true;
+
+                const formData = new FormData(contactForm);
+
+                fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        closeModal();
+                        showToast();
+                    } else {
+                        alert('Wystąpił błąd podczas wysyłania wiadomości. Spróbuj ponownie.');
+                        submitBtn.textContent = 'Wyślij wiadomość';
+                        submitBtn.disabled = false;
+                    }
+                }).catch(error => {
+                    alert('Wystąpił problem z połączeniem internetowym.');
+                    submitBtn.textContent = 'Wyślij wiadomość';
+                    submitBtn.disabled = false;
+                });
+            }
+        });
+
+        [firstName, lastName, email, message].forEach(input => {
+            input.addEventListener('input', () => {
+                input.classList.remove('invalid');
+                const errSpan = document.getElementById(input.id + 'Err');
+                if (errSpan) errSpan.classList.remove('visible');
+            });
+        });
+    </script>
+
+</body>
+</html>
